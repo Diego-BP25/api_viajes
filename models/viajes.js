@@ -3,7 +3,8 @@ const {Schema, model} = require('mongoose')
 const ViajesSchema = Schema({
     codigo: {
         type: Number,
-        required:[true, "El codigo es obligatorio"]
+        required:[true, "El codigo es obligatorio"],
+        unique: true,
     },
 
     ciudadOrigen: {

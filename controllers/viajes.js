@@ -8,13 +8,28 @@ const viajesGet = async (req, res = response) =>{
     //const {nombre} = req.query //Desestructuracion
 
     //Consultar todos los Vehiculos
-    const viajes = await Viajes.find()
+    try {
+        const { ciudadOrigen } = req.body;
 
-    res.json({ //RESPUESTA EN JSOn
-        viajes
-    })
-   
-}
+        let viajes;
+        if (ciudadOrigen) {
+            // Si la ciudadOrigen está presente, filtra los viajes por esa ciudad
+            viajes = await Viajes.find({ciudadOrigen:ciudadOrigen });
+        } else {
+            // Si no hay ciudadOrigen, obtén todos los viajes
+            viajes = await Viajes.find();
+        }
+
+        res.json({
+            viajes,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            msg: 'Error interno del servidor',
+        });
+    }
+};
 //Método POST de la api
 const viajesPost = async(req, res) => {
     let mensaje = 'Inserción Exitosa'
@@ -53,11 +68,11 @@ const viajesPut = async(req, res = response) => {
 //Método DELETE de la api
 const viajesDelete = async(req, res) => {
 
-    const {_id} = req.body
+    const {codigo} = req.body
     let mensaje = 'La eliminiación se efectuó exitosamente.'
 
     try{
-        const viajes = await Viajes.deleteOne({_id: _id})
+        const viajes = await Viajes.deleteOne({codigo: codigo})
     }
     catch(error){
         mensaje = 'Se presentaron problemas en la eliminación.'
